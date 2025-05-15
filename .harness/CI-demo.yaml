@@ -42,6 +42,7 @@ pipeline:
                       cd my-angular-app && npm install
                       npx ng build --configuration production
                       cd ../.. && npm install && npm run zip
+                      ls -la
                   when:
                     stageStatus: Success
                     condition: "true"
