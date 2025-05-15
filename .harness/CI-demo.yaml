@@ -1,0 +1,45 @@
+pipeline:
+  name: CI-demo
+  identifier: CIdemo
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: demogithubconnector
+        build: <+input>
+  stages:
+    - stage:
+        name: Build
+        identifier: Build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          platform:
+            os: Linux
+            arch: Arm64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Create_build
+                  identifier: Create_build
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: node:latest
+                    shell: Sh
+                    command: |-
+                      npm install archiver fs-extra
+                      node angular-build.js
+                      ls -la
+                  when:
+                    stageStatus: Success
+                    condition: "true"
