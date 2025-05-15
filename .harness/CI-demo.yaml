@@ -38,6 +38,7 @@ pipeline:
                     shell: Sh
                     command: |-
                       npm install archiver fs-extra
+                      npx ng build my-angular-app --configuration production
                       node angular-build.js
                       ls -la
                   when:
