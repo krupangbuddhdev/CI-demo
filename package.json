@@ -1,14 +1,10 @@
 {
-  "name": "my-angular-app",
+  "name": "ci-tools",
   "version": "1.0.0",
   "scripts": {
-    "build": "ng build --configuration production",
-    "zip": "node zip-build.js"
+    "zip": "node angular-build.js"
   },
-  "private": true,
-  "dependencies": {},
   "devDependencies": {
-    "@angular/cli": "^16.0.0",
     "archiver": "^5.3.1",
     "fs-extra": "^11.1.1"
   }
