@@ -2,9 +2,9 @@ const fs = require('fs-extra');
 const path = require('path');
 const archiver = require('archiver');
 
-const projectName = 'my-angular-app'; // <-- update this
-const distDir = path.resolve(__dirname, 'dist', projectName);
-const zipPath = path.resolve(__dirname, 'build.zip');
+const projectName = 'my-angular-app';
+const distDir = path.join(__dirname, 'apps', projectName, 'dist', projectName);
+const zipPath = path.join(__dirname, 'build.zip');
 
 (async () => {
   if (!(await fs.pathExists(distDir))) {
@@ -15,8 +15,11 @@ const zipPath = path.resolve(__dirname, 'build.zip');
   const output = fs.createWriteStream(zipPath);
   const archive = archiver('zip', { zlib: { level: 9 } });
 
-  output.on('close', () => console.log(`Created zip: ${zipPath} (${archive.pointer()} bytes)`));
-  archive.on('error', err => { throw err });
+  output.on('close', () => {
+    console.log(`Created zip: ${zipPath} (${archive.pointer()} bytes)`);
+  });
+
+  archive.on('error', err => { throw err; });
 
   archive.pipe(output);
   archive.directory(distDir, false);
