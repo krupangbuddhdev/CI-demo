@@ -37,11 +37,11 @@ pipeline:
                     image: node:20
                     shell: Sh
                     command: |-
-                      npm install
-                      npm install -g @angular/cli archiver fs-extra
-                      npx ng build my-angular-app --configuration production
-                      node angular-build.js
-                      ls -la
+                      cd /harness/apps
+                      npx @angular/cli new my-angular-app
+                      cd my-angular-app && npm install
+                      npx ng build --configuration production
+                      cd ../.. && npm install && npm run zip
                   when:
                     stageStatus: Success
                     condition: "true"
