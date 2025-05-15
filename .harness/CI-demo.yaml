@@ -44,6 +44,15 @@ pipeline:
                       npx ng build --configuration production
                       cd ../.. && npm install && npm run zip
                       ls -la
+                      mv build.zip build_${HARNESS_JOB_ID}.zip
+                      ls -la
+                      export artifact="build_*.zip"
+                    envVariables:
+                      HARNESS_JOB_ID: <+pipeline.sequenceId>
+                    outputVariables:
+                      - name: artifact
+                        type: String
+                        value: artifact
                   when:
                     stageStatus: Success
                     condition: "true"
