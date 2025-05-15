@@ -37,6 +37,7 @@ pipeline:
                     image: node:20
                     shell: Sh
                     command: |-
+                      mkdir /harness/apps
                       cd /harness/apps
                       npx @angular/cli new my-angular-app
                       cd my-angular-app && npm install
