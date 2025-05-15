@@ -34,7 +34,7 @@ pipeline:
                   identifier: Create_build
                   spec:
                     connectorRef: account.harnessImage
-                    image: node:latest
+                    image: node:20
                     shell: Sh
                     command: |-
                       npm install archiver fs-extra
