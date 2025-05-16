@@ -1,0 +1,58 @@
+pipeline:
+  name: CI-demo-1
+  identifier: CIdemo1
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: demogithubconnector
+        build: <+input>
+  stages:
+    - stage:
+        name: Build
+        identifier: Build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          platform:
+            os: Linux
+            arch: Arm64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Create_Build
+                  identifier: Create_Build
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: node:20
+                    shell: Sh
+                    command: |-
+                      mkdir /harness/apps
+                      cd /harness/apps
+                      npx @angular/cli new my-angular-app
+                      cd my-angular-app && npm install
+                      npx ng build --configuration production
+                      cd ../.. && npm install && npm run zip
+                      ls -la
+                      mv build.zip build_${HARNESS_JOB_ID}.zip
+                      ls -la
+                      export artifact="build_*.zip"
+                    envVariables:
+                      HARNESS_JOB_ID: <+pipeline.sequenceId>
+                    outputVariables:
+                      - name: artifact
+                        type: String
+                        value: artifact
+                  when:
+                    stageStatus: Success
+                    condition: "true"
