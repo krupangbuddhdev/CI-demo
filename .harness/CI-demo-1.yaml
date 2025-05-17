@@ -63,7 +63,7 @@ pipeline:
                   spec:
                     connectorRef: Artifactory_connector
                     target: angular-npm/
-                    sourcePath: target/<+pipeline.stages.Build.spec.execution.steps.Create_Build.output.outputVariables.artifact>
+                    sourcePath: <+pipeline.stages.Build.spec.execution.steps.Create_Build.output.outputVariables.artifact>
                   when:
                     stageStatus: Success
                     condition: "true"
