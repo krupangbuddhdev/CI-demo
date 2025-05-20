@@ -57,6 +57,59 @@ pipeline:
                     stageStatus: Success
                     condition: "true"
               - step:
+                  type: Sonarqube
+                  name: Sonarqube_1
+                  identifier: Sonarqube_1
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      workspace: /harness
+                      detection: auto
+                    advanced:
+                      log:
+                        level: debug
+                    auth:
+                      access_token: <+secrets.getValue("account.Sonar-key")>
+                      domain: https://sonar.arlocloud.com
+                      ssl: true
+                    tool:
+                      project_key: CI-demo
+                  when:
+                    stageStatus: Success
+                    condition: "true"
+              - step:
+                  type: Run
+                  name: Protecode
+                  identifier: Protecode
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: node:20
+                    shell: Sh
+                    command: |-
+                      #!/bin/bash
+
+                      # Simulate Jenkins parameter
+                      runProtecode=true  # Set to true or false depending on whether to run
+
+                      if [ "$runProtecode" = true ]; then
+                        cd "/harness" || exit 1
+                        pwd && ls
+                        echo "Uploading"
+                        curl -H "Authorization: Bearer <+secrets.getValue("account.Protecode_password")>" \
+                               -H "Group: 1229" \
+                               -T hmswebclient_*.zip \
+                               "https://protecode-sc.com/api/upload/"
+                      else
+                        echo "Protecode step skipped due to 'when' condition"
+                      fi
+                    envVariables:
+                      BRANCH_NAME: <+codebase.targetBranch>
+                  when:
+                    stageStatus: Success
+                    condition: "true"
+              - step:
                   type: ArtifactoryUpload
                   name: Upload_to_artifactory
                   identifier: Upload_to_artifactory
